@@ -1,59 +1,59 @@
+programs_to_terminate = ["NimdowStatus"]
+
 [window]
-width = 740
-height = 410
-title = "nlogout"
-background_color = "#ee99a0"
+width = 600
+height = 98
+title = "nlogout" #Can be used to set floating mode with your WM
+background_color = "#f5e0dc" #System Themes Override This
 
 [font]
-family = "DejaVuSans"
+family = "Iosevka NFM" #Set you button text font,
 size = 16
-color = "#363a4f"  # Add this line for the font color
+color = "#363a4f"
 
 [button]
-width = 100
-height = 100
-padding = 5
+width = 80
+height = 80
+padding = 3 #spacing around each button
 
 [buttons.cancel]
 text = "Cancel"
-#icon = "\uF00D"
+icon = "\uF00D" #set icon, nerd fonts or awesome font
 shortcut = "Escape"
 background_color = "#f5e0dc"
 
 [buttons.logout]
 text = "Logout"
-#icon = "\uF2F5"
+icon = "\uF2F5"
 shortcut = "L"
 background_color = "#cba6f7"
 
 [buttons.reboot]
 text = "Reboot"
-#icon = "\uF021"
+icon = "\uF021"
 shortcut = "R"
 background_color = "#f5c2e7"
 
 [buttons.shutdown]
 text = "Shutdown"
-#icon = "\uF011"
+icon = "\uF011"
 shortcut = "S"
 background_color = "#f5a97f"
 
 [buttons.suspend]
 text = "Suspend"
-#icon = "\uF186"
+icon = "\uF186"
 shortcut = "U"
 background_color = "#7dc4e4"
 
 [buttons.hibernate]
 text = "Hibernate"
-#icon = "\uF0E2"
+icon = "\uF0E2"
 shortcut = "H"
 background_color = "#a6da95"
 
 [buttons.lock]
 text = "Lock"
-#icon = "\uF023"
+icon = "\uF023"
 shortcut = "K"
 background_color = "#8aadf4"
-
-programs_to_terminate = ["NimdowStatus"]
