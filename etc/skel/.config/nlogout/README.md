@@ -56,7 +56,7 @@ The `lock_screen_app` setting allows you to specify a custom lock screen applica
    ```
 3. Compile the application:
    ```bash
-   nim c -d:release nlogout.nim
+   nim compile --define:release --opt:size --app:gui --outdir:$HOME/.config/nlogout/ src/nlogout.nim 
    ```
 4. Copy the `config.toml` to `~/.config/nlogout/`
 5. Create icon themes in `~/.config/nlogout/themes/` (e.g., `~/.config/nlogout/themes/sardi-purple/`)
