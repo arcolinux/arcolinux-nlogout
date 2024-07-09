@@ -4,7 +4,12 @@ import parsetoml
 
 type
   ButtonConfig = object
-    text, icon, shortcut, backgroundColor: string
+    text, iconPath, shortcut, backgroundColor: string
+    iconSize: int
+
+  WindowConfig = object
+    width, height: int
+    title, backgroundColor: string
 
   Config = object
     buttons: Table[string, ButtonConfig]
@@ -16,42 +21,40 @@ type
     buttonWidth: int
     buttonHeight: int
     buttonPadding: int
-
-  WindowConfig = object
-    width, height: int
-    title, backgroundColor: string
+    buttonTopPadding: int
+    lockScreenApp: string
 
 const
   CONFIG_PATH = getHomeDir() / ".config/nlogout/config.toml"
   DEFAULT_CONFIG = Config(
     buttons: {
-      "cancel": ButtonConfig(text: "Cancel", icon: "\uF00D", shortcut: "Escape", backgroundColor: "#f5e0dc"),
-      "logout": ButtonConfig(text: "Logout", icon: "\uF2F5", shortcut: "L", backgroundColor: "#cba6f7"),
-      "reboot": ButtonConfig(text: "Reboot", icon: "\uF021", shortcut: "R", backgroundColor: "#f5c2e7"),
-      "shutdown": ButtonConfig(text: "Shutdown", icon: "\uF011", shortcut: "S", backgroundColor: "#f5a97f"),
-      "suspend": ButtonConfig(text: "Suspend", icon: "\uF186", shortcut: "U", backgroundColor: "#7dc4e4"),
-      "hibernate": ButtonConfig(text: "Hibernate", icon: "\uF0E2", shortcut: "H", backgroundColor: "#a6da95"),
-      "lock": ButtonConfig(text: "Lock", icon: "\uF023", shortcut: "K", backgroundColor: "#8aadf4")
+      "cancel": ButtonConfig(text: "Cancel", iconPath: "", shortcut: "Escape", backgroundColor: "#f5e0dc", iconSize: 32),
+      "logout": ButtonConfig(text: "Logout", iconPath: "", shortcut: "L", backgroundColor: "#cba6f7", iconSize: 32),
+      "reboot": ButtonConfig(text: "Reboot", iconPath: "", shortcut: "R", backgroundColor: "#f5c2e7", iconSize: 32),
+      "shutdown": ButtonConfig(text: "Shutdown", iconPath: "", shortcut: "S", backgroundColor: "#f5a97f", iconSize: 32),
+      "suspend": ButtonConfig(text: "Suspend", iconPath: "", shortcut: "U", backgroundColor: "#7dc4e4", iconSize: 32),
+      "hibernate": ButtonConfig(text: "Hibernate", iconPath: "", shortcut: "H", backgroundColor: "#a6da95", iconSize: 32),
+      "lock": ButtonConfig(text: "Lock", iconPath: "", shortcut: "K", backgroundColor: "#8aadf4", iconSize: 32)
     }.toTable,
-    window: WindowConfig(width: 600, height: 98, title: "nlogout", backgroundColor: "#FFFFFF"),
+    window: WindowConfig(width: 740, height: 118, title: "nlogout", backgroundColor: "#FFFFFF"),
     programsToTerminate: @[""],
     fontFamily: "Open Sans",
     fontSize: 16,
-    fontColor: "#363a4f",  # Default font color
-    buttonWidth: 80,
-    buttonHeight: 80,
-    buttonPadding: 3
+    fontColor: "#363a4f",
+    buttonWidth: 100,
+    buttonHeight: 100,
+    buttonPadding: 3,
+    buttonTopPadding: 5,
+    lockScreenApp: "loginctl lock-session"
   )
   BUTTON_ORDER = ["cancel", "logout", "reboot", "shutdown", "suspend", "hibernate", "lock"]
 
 proc standardizeKeyName(key: string): string =
-  var standardized = key.toLower()
-  if standardized.startsWith("key_"):
-    standardized = standardized[4..^1]
-  case standardized
-  of "esc": result = "escape"
-  of "return": result = "enter"
-  else: result = standardized
+  result = key.toLower()
+  if result.startsWith("key_"):
+    result = result[4..^1]
+  if result == "esc": result = "escape"
+  elif result == "return": result = "enter"
 
 proc hexToRgb(hex: string): Color =
   var hexColor = hex.strip()
@@ -64,7 +67,7 @@ proc hexToRgb(hex: string): Color =
       b = byte(parseHexInt(hexColor[4..5]))
     result = rgb(r, g, b)
   else:
-    result = rgb(0.byte, 0.byte, 0.byte)  # Default to black if invalid hex
+    result = rgb(0.byte, 0.byte, 0.byte)
 
 proc loadConfig(): Config =
   result = DEFAULT_CONFIG
@@ -72,8 +75,8 @@ proc loadConfig(): Config =
     let toml = parsetoml.parseFile(CONFIG_PATH)
     if toml.hasKey("window"):
       let windowConfig = toml["window"]
-      result.window.width = windowConfig.getOrDefault("width").getInt(800)
-      result.window.height = windowConfig.getOrDefault("height").getInt(500)
+      result.window.width = windowConfig.getOrDefault("width").getInt(740)
+      result.window.height = windowConfig.getOrDefault("height").getInt(118)
       result.window.title = windowConfig.getOrDefault("title").getStr("nlogout")
       result.window.backgroundColor = windowConfig.getOrDefault("background_color").getStr("#FFFFFF")
     
@@ -82,11 +85,18 @@ proc loadConfig(): Config =
       for key in BUTTON_ORDER:
         if buttonConfigs.hasKey(key):
           let btnConfig = buttonConfigs[key]
+          var iconPath = btnConfig.getOrDefault("icon_path").getStr(result.buttons[key].iconPath)
+          
+          # Resolve relative paths
+          if not isAbsolute(iconPath):
+            iconPath = getCurrentDir() / iconPath
+          
           result.buttons[key] = ButtonConfig(
             text: btnConfig.getOrDefault("text").getStr(result.buttons[key].text),
-            icon: btnConfig.getOrDefault("icon").getStr(result.buttons[key].icon),
+            iconPath: iconPath,
             shortcut: standardizeKeyName(btnConfig.getOrDefault("shortcut").getStr(result.buttons[key].shortcut)),
-            backgroundColor: btnConfig.getOrDefault("background_color").getStr(result.buttons[key].backgroundColor)
+            backgroundColor: btnConfig.getOrDefault("background_color").getStr(result.buttons[key].backgroundColor),
+            iconSize: btnConfig.getOrDefault("icon_size").getInt(result.buttons[key].iconSize)
           )
     
     if toml.hasKey("programs_to_terminate"):
@@ -103,6 +113,10 @@ proc loadConfig(): Config =
       result.buttonWidth = buttonConfig.getOrDefault("width").getInt(result.buttonWidth)
       result.buttonHeight = buttonConfig.getOrDefault("height").getInt(result.buttonHeight)
       result.buttonPadding = buttonConfig.getOrDefault("padding").getInt(result.buttonPadding)
+      result.buttonTopPadding = buttonConfig.getOrDefault("top_padding").getInt(result.buttonTopPadding)
+
+    if toml.hasKey("lock_screen_app"):
+      result.lockScreenApp = toml["lock_screen_app"].getStr(result.lockScreenApp)
 
 proc createButton(cfg: ButtonConfig, config: Config, action: proc()): Control =
   var button = newControl()
@@ -122,16 +136,28 @@ proc createButton(cfg: ButtonConfig, config: Config, action: proc()): Control =
     canvas.fontBold = true
     canvas.textColor = hexToRgb(config.fontColor)
 
-    let lines = [cfg.icon, cfg.text, "(" & cfg.shortcut & ")"]
-    let lineHeight = config.fontSize.float * 1.0
-    let totalHeight = lineHeight * lines.len.float
-    var y = (buttonHeight - totalHeight) / 2
+    var y = config.buttonTopPadding.float
 
-    for line in lines:
-      let textWidth = canvas.getTextWidth(line).float
-      let x = (buttonWidth - textWidth) / 2
-      canvas.drawText(line, x.int, y.int)
-      y += lineHeight
+    # Draw icon
+    if cfg.iconPath != "" and fileExists(cfg.iconPath):
+      var icon = newImage()
+      icon.loadFromFile(cfg.iconPath)
+      let iconX = (buttonWidth - cfg.iconSize.float) / 2
+      let iconY = y
+      canvas.drawImage(icon, iconX.int, iconY.int, cfg.iconSize, cfg.iconSize)
+      y += cfg.iconSize.float + 5  # Add some padding after the icon
+
+    # Draw text
+    let textWidth = canvas.getTextWidth(cfg.text).float
+    let textX = (buttonWidth - textWidth) / 2
+    canvas.drawText(cfg.text, textX.int, y.int)
+    y += config.fontSize.float + 5  # Add some padding after the text
+
+    # Draw shortcut
+    let shortcutText = "(" & cfg.shortcut & ")"
+    let shortcutWidth = canvas.getTextWidth(shortcutText).float
+    let shortcutX = (buttonWidth - shortcutWidth) / 2
+    canvas.drawText(shortcutText, shortcutX.int, y.int)
 
   button.onClick = proc(event: ClickEvent) =
     action()
@@ -164,6 +190,7 @@ proc main() =
   var container = newLayoutContainer(Layout_Vertical)
   container.widthMode = WidthMode_Fill
   container.heightMode = HeightMode_Fill
+  container.backgroundColor = hexToRgb(config.window.backgroundColor)
   window.add(container)
 
   # Top spacer
@@ -198,7 +225,7 @@ proc main() =
     "shutdown": proc() {.closure.} = discard execCmd("systemctl poweroff"),
     "suspend": proc() {.closure.} = discard execCmd("systemctl suspend"),
     "hibernate": proc() {.closure.} = discard execCmd("systemctl hibernate"),
-    "lock": proc() {.closure.} = discard execCmd("loginctl lock-session")
+    "lock": proc() {.closure.} = discard execCmd(config.lockScreenApp)
   }.toTable
 
   for key in BUTTON_ORDER:
