@@ -2,7 +2,7 @@ programs_to_terminate = [""]  	#Example ["NimdowStatus", "st", "some_other_runni
 lock_screen_app = ""  			#Example"i3lock -c 000000"
 
 [window]
-width = 840 					#Width of window, might need to adjust to suit button sizes
+width = 740 					#Width of window, might need to adjust to suit button sizes
 height = 118 					#Height of window, might need to adjust to suit button sizes
 title = "nlogout" 				#Can be used to set floating mode with your WM
 background_color = "#f5e0dc" 	#System Themes Override This
@@ -21,48 +21,48 @@ top_padding = 5 				#Spacing for the icon at the top of the button
 [buttons.cancel]
 text = "Cancel"					#Set Button text, useful for non english languages
 background_color = "#f5e0dc"	#Set button background color
-icon_path = "themes/sardi-evopop/cancel.svg" #Set button icon
+icon_path = "themes/sardi-purple/cancel.svg" #Set button icon
 icon_size = 32					#Set button icon size
 shortcut = "Escape"				#Set hotkey/shortcut key for button
 
 [buttons.logout]
 text = "Logout"
 background_color = "#cba6f7"
-icon_path = "themes/sardi-evopop/logout.svg"
+icon_path = "themes/sardi-purple/logout.svg"
 icon_size = 32
 shortcut = "L"
 
 [buttons.reboot]
 text = "Reboot"
 background_color = "#f5c2e7"
-icon_path = "themes/sardi-evopop/restart.svg"
+icon_path = "themes/sardi-purple/restart.svg"
 icon_size = 32
 shortcut = "R"
 
 [buttons.shutdown]
 text = "Shutdown"
 background_color = "#f5a97f"
-icon_path = "themes/sardi-evopop/shutdown.svg"
+icon_path = "themes/sardi-purple/shutdown.svg"
 icon_size = 32
 shortcut = "S"
 
 [buttons.suspend]
 text = "Suspend"
 background_color = "#7dc4e4"
-icon_path = "themes/sardi-evopop/suspend.svg"
+icon_path = "themes/sardi-purple/suspend.svg"
 icon_size = 32
 shortcut = "U"
 
 [buttons.hibernate]
 text = "Hibernate"
 background_color = "#a6da95"
-icon_path = "themes/sardi-evopop/hibernate.svg"
+icon_path = "themes/sardi-purple/hibernate.svg"
 icon_size = 32
 shortcut = "H"
 
 [buttons.lock]
 text = "Lock"
 background_color = "#8aadf4"
-icon_path = "themes/sardi-evopop/lock.svg"
+icon_path = "themes/sardi-purple/lock.svg"
 icon_size = 32
 shortcut = "K"
