@@ -2,7 +2,7 @@ programs_to_terminate = [""]  	#Example ["NimdowStatus", "st", "some_other_runni
 lock_screen_app = ""  			#Example"i3lock -c 000000"
 
 [window]
-width = 740 					#Width of window, might need to adjust to suit button sizes
+width = 840 					#Width of window, might need to adjust to suit button sizes
 height = 118 					#Height of window, might need to adjust to suit button sizes
 title = "nlogout" 				#Can be used to set floating mode with your WM
 background_color = "#f5e0dc" 	#System Themes Override This
