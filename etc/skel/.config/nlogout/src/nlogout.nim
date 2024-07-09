@@ -225,7 +225,11 @@ proc main() =
     "shutdown": proc() {.closure.} = discard execCmd("systemctl poweroff"),
     "suspend": proc() {.closure.} = discard execCmd("systemctl suspend"),
     "hibernate": proc() {.closure.} = discard execCmd("systemctl hibernate"),
-    "lock": proc() {.closure.} = discard execCmd(config.lockScreenApp)
+    "lock": proc() {.closure.} = 
+      if config.lockScreenApp != "":
+        discard execCmd(config.lockScreenApp)
+      else:
+        discard execCmd("loginctl lock-session")
   }.toTable
 
   for key in BUTTON_ORDER:
