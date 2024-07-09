@@ -4,8 +4,7 @@ import parsetoml
 
 type
   ButtonConfig = object
-    text, iconPath, shortcut, backgroundColor: string
-    iconSize: int
+    text, shortcut, backgroundColor: string
 
   WindowConfig = object
     width, height: int
@@ -22,19 +21,22 @@ type
     buttonHeight: int
     buttonPadding: int
     buttonTopPadding: int
+    iconSize: int
+    iconTheme: string
     lockScreenApp: string
 
 const
   CONFIG_PATH = getHomeDir() / ".config/nlogout/config.toml"
+  ICON_THEME_PATH = getHomeDir() / ".config/nlogout/themes"
   DEFAULT_CONFIG = Config(
     buttons: {
-      "cancel": ButtonConfig(text: "Cancel", iconPath: "", shortcut: "Escape", backgroundColor: "#f5e0dc", iconSize: 32),
-      "logout": ButtonConfig(text: "Logout", iconPath: "", shortcut: "L", backgroundColor: "#cba6f7", iconSize: 32),
-      "reboot": ButtonConfig(text: "Reboot", iconPath: "", shortcut: "R", backgroundColor: "#f5c2e7", iconSize: 32),
-      "shutdown": ButtonConfig(text: "Shutdown", iconPath: "", shortcut: "S", backgroundColor: "#f5a97f", iconSize: 32),
-      "suspend": ButtonConfig(text: "Suspend", iconPath: "", shortcut: "U", backgroundColor: "#7dc4e4", iconSize: 32),
-      "hibernate": ButtonConfig(text: "Hibernate", iconPath: "", shortcut: "H", backgroundColor: "#a6da95", iconSize: 32),
-      "lock": ButtonConfig(text: "Lock", iconPath: "", shortcut: "K", backgroundColor: "#8aadf4", iconSize: 32)
+      "cancel": ButtonConfig(text: "Cancel", shortcut: "Escape", backgroundColor: "#f5e0dc"),
+      "logout": ButtonConfig(text: "Logout", shortcut: "L", backgroundColor: "#cba6f7"),
+      "reboot": ButtonConfig(text: "Reboot", shortcut: "R", backgroundColor: "#f5c2e7"),
+      "shutdown": ButtonConfig(text: "Shutdown", shortcut: "S", backgroundColor: "#f5a97f"),
+      "suspend": ButtonConfig(text: "Suspend", shortcut: "U", backgroundColor: "#7dc4e4"),
+      "hibernate": ButtonConfig(text: "Hibernate", shortcut: "H", backgroundColor: "#a6da95"),
+      "lock": ButtonConfig(text: "Lock", shortcut: "K", backgroundColor: "#8aadf4")
     }.toTable,
     window: WindowConfig(width: 740, height: 118, title: "nlogout", backgroundColor: "#FFFFFF"),
     programsToTerminate: @[""],
@@ -45,6 +47,8 @@ const
     buttonHeight: 100,
     buttonPadding: 3,
     buttonTopPadding: 5,
+    iconSize: 32,
+    iconTheme: "default",
     lockScreenApp: "loginctl lock-session"
   )
   BUTTON_ORDER = ["cancel", "logout", "reboot", "shutdown", "suspend", "hibernate", "lock"]
@@ -75,32 +79,10 @@ proc loadConfig(): Config =
     let toml = parsetoml.parseFile(CONFIG_PATH)
     if toml.hasKey("window"):
       let windowConfig = toml["window"]
-      result.window.width = windowConfig.getOrDefault("width").getInt(740)
-      result.window.height = windowConfig.getOrDefault("height").getInt(118)
-      result.window.title = windowConfig.getOrDefault("title").getStr("nlogout")
-      result.window.backgroundColor = windowConfig.getOrDefault("background_color").getStr("#FFFFFF")
-    
-    if toml.hasKey("buttons"):
-      let buttonConfigs = toml["buttons"]
-      for key in BUTTON_ORDER:
-        if buttonConfigs.hasKey(key):
-          let btnConfig = buttonConfigs[key]
-          var iconPath = btnConfig.getOrDefault("icon_path").getStr(result.buttons[key].iconPath)
-          
-          # Resolve relative paths
-          if not isAbsolute(iconPath):
-            iconPath = getCurrentDir() / iconPath
-          
-          result.buttons[key] = ButtonConfig(
-            text: btnConfig.getOrDefault("text").getStr(result.buttons[key].text),
-            iconPath: iconPath,
-            shortcut: standardizeKeyName(btnConfig.getOrDefault("shortcut").getStr(result.buttons[key].shortcut)),
-            backgroundColor: btnConfig.getOrDefault("background_color").getStr(result.buttons[key].backgroundColor),
-            iconSize: btnConfig.getOrDefault("icon_size").getInt(result.buttons[key].iconSize)
-          )
-    
-    if toml.hasKey("programs_to_terminate"):
-      result.programsToTerminate = toml["programs_to_terminate"].getElems().mapIt(it.getStr())
+      result.window.width = windowConfig.getOrDefault("width").getInt(result.window.width)
+      result.window.height = windowConfig.getOrDefault("height").getInt(result.window.height)
+      result.window.title = windowConfig.getOrDefault("title").getStr(result.window.title)
+      result.window.backgroundColor = windowConfig.getOrDefault("background_color").getStr(result.window.backgroundColor)
     
     if toml.hasKey("font"):
       let fontConfig = toml["font"]
@@ -114,11 +96,32 @@ proc loadConfig(): Config =
       result.buttonHeight = buttonConfig.getOrDefault("height").getInt(result.buttonHeight)
       result.buttonPadding = buttonConfig.getOrDefault("padding").getInt(result.buttonPadding)
       result.buttonTopPadding = buttonConfig.getOrDefault("top_padding").getInt(result.buttonTopPadding)
+      result.iconSize = buttonConfig.getOrDefault("icon_size").getInt(result.iconSize)
+      result.iconTheme = buttonConfig.getOrDefault("icon_theme").getStr(result.iconTheme)
+
+    if toml.hasKey("buttons"):
+      let buttonConfigs = toml["buttons"]
+      for key in BUTTON_ORDER:
+        if buttonConfigs.hasKey(key):
+          let btnConfig = buttonConfigs[key]
+          result.buttons[key] = ButtonConfig(
+            text: btnConfig.getOrDefault("text").getStr(result.buttons[key].text),
+            shortcut: standardizeKeyName(btnConfig.getOrDefault("shortcut").getStr(result.buttons[key].shortcut)),
+            backgroundColor: btnConfig.getOrDefault("background_color").getStr(result.buttons[key].backgroundColor)
+          )
+    
+    if toml.hasKey("programs_to_terminate"):
+      result.programsToTerminate = toml["programs_to_terminate"].getElems().mapIt(it.getStr())
 
     if toml.hasKey("lock_screen_app"):
       result.lockScreenApp = toml["lock_screen_app"].getStr(result.lockScreenApp)
 
-proc createButton(cfg: ButtonConfig, config: Config, action: proc()): Control =
+proc getIconPath(config: Config, buttonKey: string): string =
+  result = ICON_THEME_PATH / config.iconTheme / (buttonKey & ".svg")
+  if not fileExists(result):
+    result = ICON_THEME_PATH / "default" / (buttonKey & ".svg")
+
+proc createButton(cfg: ButtonConfig, config: Config, buttonKey: string, action: proc()): Control =
   var button = newControl()
   button.width = config.buttonWidth
   button.height = config.buttonHeight
@@ -139,13 +142,14 @@ proc createButton(cfg: ButtonConfig, config: Config, action: proc()): Control =
     var y = config.buttonTopPadding.float
 
     # Draw icon
-    if cfg.iconPath != "" and fileExists(cfg.iconPath):
+    let iconPath = getIconPath(config, buttonKey)
+    if fileExists(iconPath):
       var icon = newImage()
-      icon.loadFromFile(cfg.iconPath)
-      let iconX = (buttonWidth - cfg.iconSize.float) / 2
+      icon.loadFromFile(iconPath)
+      let iconX = (buttonWidth - config.iconSize.float) / 2
       let iconY = y
-      canvas.drawImage(icon, iconX.int, iconY.int, cfg.iconSize, cfg.iconSize)
-      y += cfg.iconSize.float + 5  # Add some padding after the icon
+      canvas.drawImage(icon, iconX.int, iconY.int, config.iconSize, config.iconSize)
+      y += config.iconSize.float + 5  # Add some padding after the icon
 
     # Draw text
     let textWidth = canvas.getTextWidth(cfg.text).float
@@ -234,7 +238,7 @@ proc main() =
 
   for key in BUTTON_ORDER:
     if key in config.buttons and key in actions:
-      var button = createButton(config.buttons[key], config, actions[key])
+      var button = createButton(config.buttons[key], config, key, actions[key])
       buttonContainer.add(button)
 
   # Right spacer in button container

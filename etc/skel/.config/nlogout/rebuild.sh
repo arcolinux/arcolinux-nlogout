@@ -19,7 +19,10 @@ if [[ ! -e $HOME/.config/nlogout/config.toml ]]; then
 fi
 
 #Copy themes across to .config/logout/
-cp -rv ./themes $HOME/.config/nlogout/themes
+if [[ ! -e $HOME/.config/nlogout/themes ]]; then
+    cp -rv ./themes $HOME/.config/nlogout/themes   
+fi
+
 
 
 
