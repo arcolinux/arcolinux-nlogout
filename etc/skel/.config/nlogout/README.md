@@ -1,7 +1,7 @@
 # nlogout
 `nlogout` is a GUI application that provides a configurable logout/power management menu. It uses a `config.toml` file located in the user's `.config/nlogout` directory to customize the application's appearance and functionality. The application is written in Nim.
 
-![Alt text](https://github.com/DrunkenAlcoholic/nlogout/blob/main/Custom.Catppuccin.Theme.To.Match.Status.Bar.png?raw=true "Example theme to match statusbar")
+![Alt text](https://github.com/DrunkenAlcoholic/arcolinux-nlogout/blob/main/Custom.Catppuccin.Theme.To.Match.Status.Bar.png?raw=true "Example theme to match statusbar")
 
 ## Configuration
 The `config.toml` file allows you to configure the following aspects of the `nlogout` application:
