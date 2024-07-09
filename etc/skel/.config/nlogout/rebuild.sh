@@ -10,9 +10,16 @@ yes | nimble install nigui
 
 # xsetroot -name ""  <--- why?
 
-# Compile nlogout with nim and create binrary in current location this script is ran in, the run after compiled
-nim compile --run --define:release --opt:size --app:gui --outdir:. src/nlogout.nim 
+# Compile nlogout to .config/nlogout/nlogout (will make the directory if it doesn't exsist)
+nim compile --define:release --opt:size --app:gui --outdir:$HOME/.config/nlogout/ src/nlogout.nim 
 
-sudo cp bin/nlogout /usr/bin
+#Copy config.toml if its not already in the users .config/nlogout
+if [[ ! -e $HOME/.config/nlogout/config.toml ]]; then
+    cp config.toml $HOME/.config/nlogout/config.toml   
+fi
 
-#Maybe copy config.toml to user .config/nlogout/ ???
+#Copy themes across to .config/logout/
+cp -rv ./themes $HOME/.config/nlogout/themes
+
+
+
