@@ -1,29 +1,29 @@
 programs_to_terminate = [""]  	#Example ["NimdowStatus", "st", "some_other_running_process"]
-lock_screen_app = ""  			    #Example"i3lock -c 000000"
+lock_screen_app = ""		#Example"i3lock -c 000000"
 
 [window]
-width = 740 					          #Width of window, might need to adjust to suit button sizes
-height = 118 					          #Height of window, might need to adjust to suit button sizes
-title = "nlogout" 				      #Can be used to set floating mode with your WM
-background_color = "#f5e0dc" 	  #System Themes Override This
+width = 740 			#Width of window, might need to adjust to suit button sizes
+height = 118 			#Height of window, might need to adjust to suit button sizes
+title = "nlogout" 		#Can be used to set floating mode with your WM
+background_color = "#f5e0dc" 	#System Themes Override This
 
 [font]
-family = "Iosevka NFM" 			    #Set button text font,
-size = 16						            #Set Font size for button text
-color = "#363a4f"				        #Set the Font color for text
+family = "Iosevka NFM" 		#Set button text font,
+size = 16			#Set Font size for button text
+color = "#363a4f"		#Set the Font color for text
 
 [button]
-width = 100						          #Button Width for each button
-height = 100					          #Button Height for each button
-padding = 3 					          #Spacing between each button
-top_padding = 5 				        #Spacing for the icon at the top of the button
+width = 100			#Button Width for each button
+height = 100			#Button Height for each button
+padding = 3 			#Spacing between each button
+top_padding = 5 		#Spacing for the icon at the top of the button
 icon_theme = "sardi-purple"     #Set icon theme .config/nlogout/themes/themename <-- folder containing themes
 icon_size = 32
 
 [buttons.cancel]
-text = "Cancel"					        #Set Button text, useful for non english languages
-background_color = "#f5e0dc"	  #Set button background color
-shortcut = "Escape"				      #Set hotkey/shortcut key for button
+text = "Cancel"			#Set Button text, useful for non english languages
+background_color = "#f5e0dc"	#Set button background color
+shortcut = "Escape"		#Set hotkey/shortcut key for button
 
 [buttons.logout]
 text = "Logout"
