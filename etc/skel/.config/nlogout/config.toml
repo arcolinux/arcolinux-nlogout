@@ -1,59 +1,56 @@
-programs_to_terminate = ["NimdowStatus"]
+programs_to_terminate = [""]  	#Example ["NimdowStatus", "st", "some_other_running_process"]
+lock_screen_app = ""		#Example"i3lock -c 000000"
 
 [window]
-width = 600
-height = 98
-title = "nlogout" #Can be used to set floating mode with your WM
-background_color = "#f5e0dc" #System Themes Override This
+width = 740 			#Width of window, might need to adjust to suit button sizes
+height = 118 			#Height of window, might need to adjust to suit button sizes
+title = "nlogout" 		#Can be used to set floating mode with your WM
+background_color = "#f5e0dc" 	#System Themes Override This
 
 [font]
-family = "Iosevka NFM" #Set you button text font,
-size = 16
-color = "#363a4f"
+family = "Iosevka NFM" 		#Set button text font,
+size = 16			#Set Font size for button text
+color = "#363a4f"		#Set the Font color for text
 
 [button]
-width = 80
-height = 80
-padding = 3 #spacing around each button
+width = 100			#Button Width for each button
+height = 100			#Button Height for each button
+padding = 3 			#Spacing between each button
+top_padding = 5 		#Spacing for the icon at the top of the button
+icon_theme = "sardi-purple"     #Set icon theme .config/nlogout/themes/themename <-- folder containing themes
+icon_size = 32
 
 [buttons.cancel]
-text = "Cancel"
-icon = "\uF00D" #set icon, nerd fonts or awesome font
-shortcut = "Escape"
-background_color = "#f5e0dc"
+text = "Cancel"			#Set Button text, useful for non english languages
+background_color = "#f5e0dc"	#Set button background color
+shortcut = "Escape"		#Set hotkey/shortcut key for button
 
 [buttons.logout]
 text = "Logout"
-icon = "\uF2F5"
-shortcut = "L"
 background_color = "#cba6f7"
+shortcut = "L"
 
 [buttons.reboot]
 text = "Reboot"
-icon = "\uF021"
-shortcut = "R"
 background_color = "#f5c2e7"
+shortcut = "R"
 
 [buttons.shutdown]
 text = "Shutdown"
-icon = "\uF011"
-shortcut = "S"
 background_color = "#f5a97f"
+shortcut = "S"
 
 [buttons.suspend]
 text = "Suspend"
-icon = "\uF186"
-shortcut = "U"
 background_color = "#7dc4e4"
+shortcut = "U"
 
 [buttons.hibernate]
 text = "Hibernate"
-icon = "\uF0E2"
-shortcut = "H"
 background_color = "#a6da95"
+shortcut = "H"
 
 [buttons.lock]
 text = "Lock"
-icon = "\uF023"
-shortcut = "K"
 background_color = "#8aadf4"
+shortcut = "K"

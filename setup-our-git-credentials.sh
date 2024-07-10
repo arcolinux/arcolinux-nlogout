@@ -54,15 +54,15 @@ echo
 #https://blog.nillsf.com/index.php/2021/05/27/github-sso-using-password-protected-ssh-keys
 
 project=$(basename `pwd`)
-githubdir="arcolinux"
+githubdir="DrunkenAlcoholic"
 echo "-----------------------------------------------------------------------------"
 echo "this is project https://github.com/$githubdir/$project"
 echo "-----------------------------------------------------------------------------"
 
 git config --global pull.rebase false
 git config --global push.default simple
-git config --global user.name "arcolinuxz"
-git config --global user.email "arcolinuxinfo@gmail.com"
+git config --global user.name "DrunkenAlcoholic"
+git config --global user.email "DrunkenAlcoholic@gmail.com"
 sudo git config --system core.editor nano
 git remote set-url origin git@github.com-arc:$githubdir/$project
 
