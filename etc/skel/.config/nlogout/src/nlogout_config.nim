@@ -1,4 +1,4 @@
-import std/[os, sequtils, strutils, tables, math]
+import std/[os, sequtils, strutils, tables]
 import parsetoml
 
 type
