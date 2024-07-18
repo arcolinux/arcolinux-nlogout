@@ -33,7 +33,7 @@ fi
 
 # Compile nlogout
 print_color "YELLOW" "Compiling nlogout..."
-if nim compile --define:release --opt:size --app:gui --outdir=/home/erik/ARCO/ARCOLINUX/arcolinux-nlogout/etc/skel/.config/nlogout/ /home/erik/ARCO/ARCOLINUX/arcolinux-nlogout/etc/skel/.config/nlogout/src/nlogout.nim; then
+if nim compile --define:release --opt:size --app:gui --outdir=/home/erik/ARCO/ARCOLINUX/arcolinux-nlogout/etc/skel/.config/nlogout/bin /home/erik/ARCO/ARCOLINUX/arcolinux-nlogout/etc/skel/.config/nlogout/src/nlogout.nim; then
     print_color "GREEN" "nlogout compiled successfully."
 else
     print_color "RED" "Failed to compile nlogout. Please check the error messages above."
