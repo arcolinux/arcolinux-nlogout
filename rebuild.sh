@@ -13,17 +13,6 @@ print_color() {
     printf "${!1}%s${NC}\n" "$2"
 }
 
-# Function to ask for overwrite confirmation
-ask_overwrite() {
-    local item="$1"
-    read -p "Do you want to override the existing $item? (y/n): " answer
-    [[ $answer == [Yy]* ]]
-}
-
-# Kill any running instances of nlogout
-print_color "YELLOW" "Terminating any running nlogout instances..."
-pkill -f "nlogout" || true  # Don't exit if no process found
-
 # Install nim language
 print_color "YELLOW" "Installing nim..."
 if sudo pacman -S nim --noconfirm --needed; then
@@ -42,12 +31,9 @@ else
     exit 1
 fi
 
-# Create output directory
-mkdir -p "$HOME/.config/nlogout"
-
 # Compile nlogout
 print_color "YELLOW" "Compiling nlogout..."
-if nim compile --define:release --opt:size --app:gui --outdir="$HOME/.config/nlogout/" src/nlogout.nim; then
+if nim compile --define:release --opt:size --app:gui --outdir=/home/erik/ARCO/ARCOLINUX/arcolinux-nlogout/etc/skel/.config/nlogout/ /home/erik/ARCO/ARCOLINUX/arcolinux-nlogout/etc/skel/.config/nlogout/src/nlogout.nim; then
     print_color "GREEN" "nlogout compiled successfully."
 else
     print_color "RED" "Failed to compile nlogout. Please check the error messages above."
