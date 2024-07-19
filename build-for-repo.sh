@@ -13,7 +13,7 @@ print_color() {
     printf "${!1}%s${NC}\n" "$2"
 }
 
-# Install nim language
+## Install nim language
 print_color "YELLOW" "Installing nim..."
 if sudo pacman -S nim --noconfirm --needed; then
     print_color "GREEN" "nim installed successfully."
@@ -22,7 +22,7 @@ else
     exit 1
 fi
 
-# Install required Nim modules
+## Install required Nim modules
 print_color "YELLOW" "Installing required Nim modules..."
 if yes | nimble install parsetoml && yes | nimble install nigui; then
     print_color "GREEN" "Modules installed successfully."
