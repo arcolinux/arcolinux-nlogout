@@ -46,5 +46,5 @@ else
     exit 1
 fi
 
-
-print_color "GREEN" "nlogout build completed successfully, Now copy themes directory and config.toml to your .config/nlogout, Then copy nlogout to /usr/bin."
+print_color "GREEN" "Copied nlogout to /usr/bin."
+sudo cp -v bin/nlogout /usr/bin/nlogout
