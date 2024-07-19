@@ -9,7 +9,7 @@ lock_screen_app = "i3lock -c 313244"
 
 # Window configuration
 [window]
-width = 670
+width = 782
 height = 118
 title = "nlogout"
 background_color = "#313244"
