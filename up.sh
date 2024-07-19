@@ -34,7 +34,7 @@
 echo "Checking for newer files online first"
 git pull
 
-sh ./rebuild.sh
+sh ./build-for-repo*
 
 # Below command will backup everything inside the project folder
 git add --all .
