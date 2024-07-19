@@ -13,23 +13,23 @@ print_color() {
     printf "${!1}%s${NC}\n" "$2"
 }
 
-## Install nim language
-print_color "YELLOW" "Installing nim..."
-if sudo pacman -S nim --noconfirm --needed; then
-    print_color "GREEN" "nim installed successfully."
-else
-    print_color "RED" "Failed to install nim. Please install it manually and rerun this script."
-    exit 1
-fi
+# ## Install nim language
+# print_color "YELLOW" "Installing nim..."
+# if sudo pacman -S nim --noconfirm --needed; then
+#     print_color "GREEN" "nim installed successfully."
+# else
+#     print_color "RED" "Failed to install nim. Please install it manually and rerun this script."
+#     exit 1
+# fi
 
-## Install required Nim modules
-print_color "YELLOW" "Installing required Nim modules..."
-if yes | nimble install parsetoml && yes | nimble install nigui; then
-    print_color "GREEN" "Modules installed successfully."
-else
-    print_color "RED" "Failed to install required modules. Please check your internet connection and try again."
-    exit 1
-fi
+# ## Install required Nim modules
+# print_color "YELLOW" "Installing required Nim modules..."
+# if yes | nimble install parsetoml && yes | nimble install nigui; then
+#     print_color "GREEN" "Modules installed successfully."
+# else
+#     print_color "RED" "Failed to install required modules. Please check your internet connection and try again."
+#     exit 1
+# fi
 
 # Compile nlogout
 print_color "YELLOW" "Compiling nlogout..."
